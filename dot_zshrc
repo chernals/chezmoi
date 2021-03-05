@@ -1,0 +1,122 @@
+#
+# Executes commands at the start of an interactive session.
+#
+# Authors:
+#   Sorin Ionescu <sorin.ionescu@gmail.com>
+#
+
+zmodload zsh/zprof
+# Source Prezto.
+if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
+  source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
+fi
+
+# Spaceship prompt
+# https://denysdovhan.com/spaceship-prompt/
+SPACESHIP_PROMPT_ORDER=(
+#  user          # Username section
+  pyenv         # Pyenv section
+  conda         # conda virtualenv section
+  venv          # virtualenv section
+  dir           # Current directory section
+#  host          # Hostname section
+  git           # Git section (git_branch + git_status)
+#  docker        # Docker section
+  line_sep      # Line break
+#  vi_mode       # Vi-mode indicator
+#  jobs          # Background jobs indicator
+#  exit_code     # Exit code section
+  char          # Prompt character
+)
+SPACESHIP_PROMPT_ADD_NEWLINE=false
+SPACESHIP_PROMPT_SEPARATE_LINE=false
+SPACESHIP_PYENV_PREFIX=
+SPACESHIP_CONDA_PREFIX='('
+SPACESHIP_CONDA_SUFFIX=') '
+SPACESHIP_VENV_PREFIX='('
+SPACESHIP_VENV_SUFFIX=') '
+
+# Options
+setopt AUTO_CD
+setopt ZLE
+setopt NO_HUP
+
+# Locale
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+
+# Environment variables
+export GIT_EDITOR=vi
+export HOMEBREW_EDITOR=vi
+export EDTITOR=vi
+export VISUAL=vi
+
+# Alias
+alias cern='cd /Users/chernals/OneDrive\ -\ Université\ Libre\ de\ Bruxelles/cernbox'
+alias cernbox='cd /Users/chernals/cernbox'
+alias iba='cd /Users/chernals/OneDrive\ -\ Université\ Libre\ de\ Bruxelles/ibabox'
+alias ulb='cd /Users/chernals/OneDrive\ -\ Université\ Libre\ de\ Bruxelles/ulbbox'
+alias mebox='cd /Users/chernals/OneDrive\ -\ Université\ Libre\ de\ Bruxelles/me'
+alias reps='cd ~/reps'
+alias jlab='ulimit -n 4096 && pushd ~ && jupyter lab'
+alias gitsh="perl -nE 'BEGIN {print \"git > \"} system \"git $_\"; print \"git > \"'"
+alias lxplus='ssh -Y chernals@lxplus.cern.ch'
+alias rasbpi='ssh -Y chernals@rasbpi'
+
+# GPG
+export GPG_TTY=`tty`
+
+# Bison
+export PATH=/usr/local/opt/bison/bin:$PATH
+
+# Ruby
+export PATH=/usr/local/lib/ruby/gems/2.7.0/bin:$PATH
+export PATH=/usr/local/opt/ruby/bin:$PATH
+
+# Qt
+export PATH="/usr/local/opt/qt/bin:$PATH"
+
+# Geant4
+pushd /usr/local/bin >/dev/null; . ./geant4.sh; popd >/dev/null
+
+# Root
+#pushd /usr/local >/dev/null; . bin/thisroot.sh; popd >/dev/null
+
+# BDSim
+pushd /usr/local >/dev/null; . bin/bdsim.sh; popd >/dev/null
+
+# Intel Python
+USE_DAAL4PY_SKLEARN=YES
+
+# FLUKA
+export PATH=/Users/chernals/reps/fluka/fluka2011-3.0/bin:$PATH
+
+# Homebrew
+fpath=("/usr/local/bin/" $fpath)
+# Set DYLD_LIBRARY_PATH due to imcompatibility with Homebrew symlinks
+export DYLD_LIBRARY_PATH=/System/Library/Frameworks/ImageIO.framework/Versions/A/Resources/:$DYLD_LIBRARY_PATH
+export LDFLAGS="-L/usr/local/opt/zlib/lib -L/usr/local/opt/bzip2/lib" 
+export CPPFLAGS="-I/usr/local/opt/zlib/include -I/usr/local/opt/bzip2/include"
+
+# Functions
+function channel {
+	cd /Users/chernals/Université\ Libre\ de\ Bruxelles/Metronu\ -\ AP\ -\ Documents/;
+	cd $1;
+}
+
+# Python
+## Conda
+fpath+=/Users/chernals/reps/conda-zsh-completion
+zstyle ':completion::complet:*' use-cache 1
+#source /Users/chernals/miniconda3/etc/profile.d/conda.sh
+function ca () {
+	[[ -z "$1" ]] && conda deactivate || conda activate $1
+}
+
+## pyenv
+if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
+if which pyenv > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
+if which pyenv > /dev/null; then eval "$(pyenv rehash )"; fi
+export PYENV_VIRTUALENV_DISABLE_PROMPT=1
+#export PYENV_VIRTUALENV_VERBOSE_ACTIVATE=1
+
