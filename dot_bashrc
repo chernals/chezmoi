@@ -1,0 +1,11 @@
+# .bashrc
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+	. /etc/bashrc
+fi
+
+# User specific aliases and functions
+alias eos='cd /eos/user/c/chernals'
+alias work='cd /afs/cern.ch/work/c/chernals'
+
